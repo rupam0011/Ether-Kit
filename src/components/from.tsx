@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import Sidebar from "./sidebar";
 import ToggleSwitch from "@/ui/toggleSwitch";
-import { Mic, Paperclip } from "lucide-react";
+import { Mic, Paperclip, ChevronDownIcon, Check } from "lucide-react";
 import Image from "next/image";
+import { Checkbox, Listbox, Transition } from "@headlessui/react";
 
 interface FormInput {
     companyName: string;
@@ -26,16 +27,14 @@ interface FormInput {
 
 const Forms = () => {
     const [step, setStep] = useState(1);
-
-    // Use state to manage the checked status of the switch
     const [isEnabled, setIsEnabled] = useState(false);
 
-    // Function to handle the toggle action
+
     const toggleSwitch = () => {
         setIsEnabled(!isEnabled);
     };
 
-    const { register, handleSubmit } = useForm<FormInput>({
+    const { register, handleSubmit, setValue, watch } = useForm<FormInput>({
         defaultValues: {
             companyName: "",
             address: "",
@@ -57,8 +56,6 @@ const Forms = () => {
     const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-
-
     const onSubmit = (data: FormInput) => {
         if (step < 3) {
             nextStep();
@@ -67,29 +64,35 @@ const Forms = () => {
         }
     };
 
+    // Headless UI values
+    const currencies = ["USD", "EUR", "INR"];
+    const timelines = ["1 month", "3 months", "6 months"];
+    const additionalServices = ["UI/UX Design", "SEO", "Marketing"];
+    const deliveryFormats = ["PDF", "Figma", "XD"];
+
     return (
-        <div className="flex gap-8 w-full">
+        <div className="flex flex-col-reverse lg:flex-row gap-8 w-full">
             <Sidebar currentStep={step} />
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="flex-1 border border-t-2 border-r-10 border-b-4 rounded-[40px] p-8 bg-white"
+                className="flex-1 border border-t-2 border-r-10 border-b-4 rounded-[40px] px-6 sm:px-8 py-8 bg-white"
             >
-                {/* 🧾 STEP 1 — Company Info */}
+                {/* STEP 1 */}
                 {step === 1 && (
                     <>
                         <div className="bg-[#E7DAFE] px-2 py-2 rounded-[10px] w-fit flex justify-center text-sm font-medium text-[#9E73E9] mb-1 border border-black border-b-3">
                             Business Profile
                         </div>
 
-                        <h2 className="text-[55px] font-semibold mb-2 bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
+                        <h2 className="text-[34px] sm:text-[45px] xl:text-[55px] font-semibold mb-2 bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
                             Your Company Info
                         </h2>
-                        <p className="text-[16px] text-[#727272]  leading-5">
+                        <p className="text-[16px] text-[#727272] leading-5">
                             Tell us about your organization to get started
                         </p>
 
                         <div className="flex flex-col gap-8 pt-35">
-                            <div className="grid grid-cols-3 gap-5">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                 {[
                                     { id: "companyName", label: "Company Name *", placeholder: "Search" },
                                     { id: "address", label: "Address *", placeholder: "New York" },
@@ -109,7 +112,7 @@ const Forms = () => {
                                 ))}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 {[
                                     { id: "email", label: "Email *", placeholder: "@gmail.com" },
                                     { id: "phone", label: "Phone *", placeholder: "+91 000000000" },
@@ -128,22 +131,22 @@ const Forms = () => {
                                 ))}
                             </div>
                         </div>
+
                         <div className="flex justify-end items-center pt-10 gap-3">
                             <p className="text-[16px] font-medium text-[#727272]">Add more contact details</p>
                             <ToggleSwitch enabled={isEnabled} onToggle={toggleSwitch} />
                         </div>
-
                     </>
                 )}
 
-                {/* 🧾 STEP 2 — Project Details */}
+                {/* STEP 2 */}
                 {step === 2 && (
                     <>
                         <div className="bg-[#E7DAFE] px-2 py-2 rounded-[10px] w-fit flex justify-center text-sm font-medium text-[#9E73E9] mb-1 border border-black border-b-3">
                             Project Breakdown
                         </div>
 
-                        <h2 className="text-[55px] font-semibold mb-2 bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
+                        <h2 className="text-[30px] sm:text-[45px] xl:text-[55px] font-semibold mb-2 bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
                             Tell us about your project
                         </h2>
                         <p className="text-[16px] text-[#727272] leading-5">
@@ -151,7 +154,7 @@ const Forms = () => {
                         </p>
 
                         <div className="flex flex-col gap-8 pt-15">
-                            <div className="grid grid-cols-3 gap-5">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                 {[
                                     { id: "projectName", label: "Project Name *", placeholder: "Ex: Portfolio Website" },
                                     { id: "projectType", label: "Project Type *", placeholder: "Web App / Ecommerce / Landing" },
@@ -196,14 +199,14 @@ const Forms = () => {
                                         className="border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-3 h-[150px] w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 resize-none"
                                     />
 
-                                    {/* ICONS positioned inside bottom-right corner */}
                                     <div className="absolute bottom-5 left-4 flex gap-2 text-gray-500 cursor-pointer">
-                                        <Paperclip size={30} className=" rounded-full p-1 hover:bg-gray-200 transition-all duration-150" />
-                                        <Mic size={30} className=" rounded-full p-1 hover:bg-gray-200 transition-all duration-150" />
+                                        <Paperclip size={30} className="rounded-full p-1 hover:bg-gray-200 transition-all duration-150" />
+                                        <Mic size={30} className="rounded-full p-1 hover:bg-gray-200 transition-all duration-150" />
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div className="flex justify-end items-center pt-10 gap-3">
                             <p className="text-[16px] font-medium text-[#727272]">Additional Requirements</p>
                             <ToggleSwitch enabled={isEnabled} onToggle={toggleSwitch} />
@@ -211,20 +214,21 @@ const Forms = () => {
                     </>
                 )}
 
-                {/* 🧾 STEP 3 — Budget & Preferences */}
+                {/* STEP 3 */}
                 {step === 3 && (
                     <>
                         <div className="bg-[#E7DAFE] px-2 py-2 rounded-[10px] w-fit flex justify-center text-sm font-medium text-[#9E73E9] mb-1 border border-black border-b-3">
                             Pocket Friendly
                         </div>
 
-                        <h2 className="text-[55px] font-semibold  bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
+                        <h2 className="text-[30px] sm:text-[45px] xl:text-[55px] font-semibold bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
                             Budget & Timeline Discussion
                         </h2>
                         <p className="text-[16px] text-[#727272] leading-5 mb-10">
                             Tell us about your project to get started
                         </p>
-                        <div className=" flex gap-2 items-center justify-center leading-5 px-4 py-1 bg-[linear-gradient(0deg,#E7DAFE_0%,#FFFFFF_100%)] w-fit rounded-2xl border-black border-t border-r-3 border-b-4 border-l">
+
+                        <div className="flex gap-2 items-center justify-center leading-5 px-4 py-1 bg-[linear-gradient(0deg,#E7DAFE_0%,#FFFFFF_100%)] w-fit rounded-2xl border-black border-t border-r-3 border-b-4 border-l">
                             <Image
                                 src="/assets/ai-img.svg"
                                 alt="ai image"
@@ -237,13 +241,14 @@ const Forms = () => {
                                 Based on your project details, we estimate a delivery of 4–6 weeks with a $30,000–$50,000 range.
                             </p>
                         </div>
+
                         <p className="text-[16px] text-[#727272] leading-5 mt-4">
                             Adjust your preferences below for a tailored estimate.
                         </p>
 
                         <div className="flex flex-col gap-8 pt-8">
-                            <div className="grid grid-cols-3 gap-5">
-                                {/* Budget Field */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full ">
+                                {/* Budget */}
                                 <div className="flex flex-col gap-3">
                                     <label htmlFor="budget" className="text-sm font-semibold text-[#00000099]">
                                         Budget Range *
@@ -257,162 +262,138 @@ const Forms = () => {
                                 </div>
 
                                 {/* Currency */}
-                                <div className="flex flex-col gap-3">
-                                    <label htmlFor="currency" className="text-sm font-semibold text-[#00000099]">
-                                        Preferred Currency *
-                                    </label>
+                                <Listbox
+                                    value={watch("currency")}
+                                    onChange={(val) => setValue("currency", val)}
+                                >
+                                    {({ open }) => (
+                                        <div className="flex flex-col gap-3 w-full relative">
+                                            <label className="text-sm font-semibold text-[#00000099]">Preferred Currency *</label>
+                                            <Listbox.Button className="appearance-none relative border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 bg-white text-left cursor-pointer">
+                                                {watch("currency") || "Select Currency"}
+                                                <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </Listbox.Button>
 
-                                    {/* wrapper that controls positioning */}
-                                    <div className="relative w-full">
-                                        <select
-                                            id="currency"
-                                            {...register("currency", { required: true })}
-                                            className="appearance-none border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full 
-        focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 
-        bg-white pr-10 cursor-pointer"
-                                        >
-                                            <option value="">Select Currency</option>
-                                            <option value="usd">USD</option>
-                                            <option value="eur">EUR</option>
-                                            <option value="inr">INR</option>
-                                        </select>
+                                            <Listbox.Options transition className="absolute z-10 top-21 w-full bg-white border border-black border-t border-r-2 border-b-3 rounded-2xl max-h-60 overflow-auto shadow-lg">
+                                                {currencies.map((cur) => (
+                                                    <Listbox.Option
+                                                        key={cur}
+                                                        value={cur}
+                                                        className={({ active }) =>
+                                                            `cursor-pointer select-none px-4 py-2 ${active ? "bg-purple-100" : ""}`
+                                                        }
+                                                    >
+                                                        {cur}
+                                                    </Listbox.Option>
+                                                ))}
+                                            </Listbox.Options>
 
-                                        {/* custom arrow icon */}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="#6A4DE8"
-                                            className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                </div>
+                                        </div>
+                                    )}
+                                </Listbox>
 
                                 {/* Timeline */}
-                                <div className="relative flex flex-col gap-3">
-                                    <label
-                                        htmlFor="timeline"
-                                        className="text-sm font-semibold text-[#00000099]"
-                                    >
-                                        Timeline *
-                                    </label>
+                                <Listbox
+                                    value={watch("timeline")}
+                                    onChange={(val) => setValue("timeline", val)}
+                                >
+                                    {({ open }) => (
+                                        <div className="flex flex-col gap-3 relative">
+                                            <label className="text-sm font-semibold text-[#00000099]">Timeline *</label>
+                                            <Listbox.Button className="appearance-none border relative border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 bg-white text-left cursor-pointer">
+                                                {watch("timeline") || "Select Timeline"}
+                                                <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </Listbox.Button>
 
-                                    <div className="relative w-full">
-                                        <select
-                                            id="timeline"
-                                            {...register("timeline", { required: true })}
-                                            className="appearance-none border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 bg-white pr-10 cursor-pointer"
-                                        >
-                                            <option value="">Select Timeline</option>
-                                            <option value="1_month">1 month</option>
-                                            <option value="3_months">3 months</option>
-                                            <option value="6_months">6 months</option>
-                                        </select>
+                                            <Listbox.Options transition className="absolute z-10 top-21 mt-1 w-full bg-white border border-black border-t border-r-2 border-b-3 rounded-2xl max-h-60 overflow-auto shadow-lg">
+                                                {timelines.map((t) => (
+                                                    <Listbox.Option
+                                                        key={t}
+                                                        value={t}
+                                                        className={({ active }) =>
+                                                            `cursor-pointer select-none px-4 py-2 ${active ? "bg-purple-100" : ""}`
+                                                        }
+                                                    >
+                                                        {t}
+                                                    </Listbox.Option>
+                                                ))}
+                                            </Listbox.Options>
 
-                                        {/* Custom arrow icon */}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="#6A4DE8"
-                                            className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                </div>
-
+                                        </div>
+                                    )}
+                                </Listbox>
                             </div>
-                            <div className="grid grid-cols-2 gap-5">
 
-                                {/* Additional Services */}
-                                <div className="flex flex-col gap-3">
-                                    <label
-                                        htmlFor="additionalServices"
-                                        className="text-sm font-semibold text-[#00000099]"
-                                    >
-                                        Additional Services
-                                    </label>
+                            {/* Additional Services & Delivery Format */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <Listbox
+                                    value={watch("additionalServices")}
+                                    onChange={(val) => setValue("additionalServices", val)}
+                                >
+                                    {({ open }) => (
+                                        <div className="flex flex-col gap-3 relative">
+                                            <label className="text-sm font-semibold text-[#00000099]">Additional Services</label>
+                                            <Listbox.Button className="appearance-none relative border  border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 bg-white text-left cursor-pointer">
+                                                {watch("additionalServices") || "Select Additional Service"}
+                                                <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </Listbox.Button>
 
-                                    {/* Wrapper for select and arrow icon */}
-                                    <div className="relative w-full">
-                                        <select
-                                            id="additionalServices"
-                                            {...register("additionalServices")}
-                                            className="appearance-none border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full
-      focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150
-      bg-white pr-10 cursor-pointer"
-                                        >
-                                            <option value="">Select Additional Service</option>
-                                            <option value="uiux">UI/UX Design</option>
-                                            <option value="seo">SEO</option>
-                                            <option value="marketing">Marketing</option>
-                                        </select>
+                                            <Listbox.Options transition className="absolute z-10 top-21 mt-1 w-full bg-white border border-black border-t border-r-2 border-b-3 rounded-2xl max-h-60 overflow-auto shadow-lg">
+                                                {additionalServices.map((s) => (
+                                                    <Listbox.Option
+                                                        key={s}
+                                                        value={s}
+                                                        className={({ active }) =>
+                                                            `cursor-pointer select-none px-4 py-2 ${active ? "bg-purple-100" : ""}`
+                                                        }
+                                                    >
+                                                        {s}
+                                                    </Listbox.Option>
+                                                ))}
+                                            </Listbox.Options>
 
-                                        {/* Custom arrow icon */}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="#6A4DE8"
-                                            className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                </div>
+                                        </div>
+                                    )}
+                                </Listbox>
 
+                                <Listbox
+                                    value={watch("deliveryFormat")}
+                                    onChange={(val) => setValue("deliveryFormat", val)}
+                                >
+                                    {({ open }) => (
+                                        <div className="flex flex-col gap-3 relative">
+                                            <label className="text-sm font-semibold text-[#00000099]">Delivery Format *</label>
+                                            <Listbox.Button className="appearance-none relative border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150 bg-white text-left cursor-pointer">
+                                                {watch("deliveryFormat") || "Select Delivery Format"}
+                                                <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </Listbox.Button>
 
-                                {/* Delivery Format */}
-                                <div className="flex flex-col gap-3">
-                                    <label
-                                        htmlFor="deliveryFormat"
-                                        className="text-sm font-semibold text-[#00000099]"
-                                    >
-                                        Delivery Format *
-                                    </label>
+                                            <Listbox.Options transition className="absolute z-10 top-21 mt-1 w-full bg-white border border-black border-t border-r-2 border-b-3 rounded-2xl max-h-60 overflow-auto shadow-lg">
+                                                {deliveryFormats.map((d) => (
+                                                    <Listbox.Option
+                                                        key={d}
+                                                        value={d}
+                                                        className={({ active }) =>
+                                                            `cursor-pointer select-none px-4 py-2 ${active ? "bg-purple-100" : ""}`
+                                                        }
+                                                    >
+                                                        {d}
+                                                    </Listbox.Option>
+                                                ))}
+                                            </Listbox.Options>
 
-                                    {/* Wrapper for select and arrow icon */}
-                                    <div className="relative w-full">
-                                        <select
-                                            id="deliveryFormat"
-                                            {...register("deliveryFormat", { required: true })}
-                                            className="appearance-none border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 w-full
-      focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150
-      bg-white pr-10 cursor-pointer"
-                                        >
-                                            <option value="">Select Delivery Format</option>
-                                            <option value="pdf">PDF</option>
-                                            <option value="figma">Figma</option>
-                                            <option value="xd">XD</option>
-                                        </select>
-
-                                        {/* Custom arrow icon */}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="#6A4DE8"
-                                            className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                </div>
-
+                                        </div>
+                                    )}
+                                </Listbox>
                             </div>
                         </div>
+
+
                     </>
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-end gap-10 mt-10 ">
+                <div className="flex justify-end gap-10 mt-10">
                     {step > 1 && (
                         <button
                             type="button"
@@ -424,7 +405,7 @@ const Forms = () => {
                     )}
                     <button
                         type="submit"
-                        className="bg-[#B287FD] text-white w-[123px] rounded-xl shadow-[0_3.7px_0_0_#624A8B] hover:-translate-y-px active:translate-y-px  transition-transform  duration-150 cursor-pointer px-6 py-2 hover:bg-[#9a6cfb] "
+                        className="bg-[#B287FD] text-white w-[123px] rounded-xl shadow-[0_3.7px_0_0_#624A8B] hover:-translate-y-px active:translate-y-px  transition-transform  duration-150 cursor-pointer px-6 py-2 hover:bg-[#9a6cfb]"
                     >
                         {step === 3 ? "Submit" : "Next"}
                     </button>

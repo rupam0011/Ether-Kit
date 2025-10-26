@@ -8,7 +8,7 @@ export default function Sidebar({ currentStep }: { currentStep: number }) {
     ];
 
     return (
-        <div className="w-[280px] flex flex-col gap-8 justify-between">
+        <div className="w-full lg:w-[280px] flex flex-col gap-8 justify-between">
             <div className="border rounded-[40px] py-8 px-6 border-t-2 border-r-6 border-b-4 border-l bg-[#FFFFFF]">
                 <h3 className="text-2xl font-semibold mb-2 bg-[linear-gradient(182.46deg,#000000_22.6%,#4E4E4E_97.94%)] bg-clip-text text-transparent">
                     3 Simple Steps
@@ -47,7 +47,7 @@ export default function Sidebar({ currentStep }: { currentStep: number }) {
                     width={100}
                     height={100}
                     quality={100}
-                    className="w-[154px] h-auto"
+                    className="w-[154px] h-auto float-animation"
                 />
                 <p className=" font-[polysans] font-semibold text-xl leading-5">
                     20% off your project quote or free design consultation!
