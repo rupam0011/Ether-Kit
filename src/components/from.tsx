@@ -279,8 +279,21 @@ const Forms = () => {
                                 ))}
                             </div>
                             <div className="flex flex-col gap-3">
-                                <label className="text-sm font-semibold text-[#00000099] flex gap-3 items-center">
+                                <label htmlFor="projectDescription" className="text-sm font-semibold text-[#00000099] flex gap-3 items-center">
                                     Project Description *
+                                    <span className="flex gap-2 items-center">
+                                        <Image
+                                            src="/assets/ai-img.svg"
+                                            alt="ai image"
+                                            width={100}
+                                            height={100}
+                                            quality={100}
+                                            className="w-8 h-auto"
+                                        />
+                                        <p className="font-bold text-[12px] text-[#B287FD]">
+                                            Write with AI
+                                        </p>
+                                    </span>
                                 </label>
                                 <div className="relative">
                                     <textarea
@@ -353,8 +366,8 @@ const Forms = () => {
                                     </label>
                                     <input
                                         id="budget"
-                                        {...register("budget", { 
-                                            required: "Budget is required" 
+                                        {...register("budget", {
+                                            required: "Budget is required"
                                         })}
                                         placeholder="Your estimated budget *"
                                         className="border border-black border-t border-r-2 border-b-3 rounded-2xl px-4 py-2.5 focus:border-purple-400 focus:ring-1 focus:ring-purple-400 outline-none transition duration-150"
